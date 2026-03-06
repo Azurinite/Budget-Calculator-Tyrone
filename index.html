@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--INCLUDE FETCH API AND DO THAT FIRST, do not do the calculation portion first as it will take you a long time.-->
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,10 +66,15 @@
                 <button><img src="/imgs/info.png" alt="info"></button>
             </section>
         </div>
+        <canvas id="doughnut-chart">Tyrone's Chart</canvas>
     </article>
 
 
     <script src="script.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="categories.js"></script>
+    <script src="navigation.js"></script>
+
 </body>
 
 </html>
