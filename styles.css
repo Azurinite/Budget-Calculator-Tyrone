@@ -16,10 +16,16 @@ body{
 
 main {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: column;
     justify-content: space-between;
     margin-left: 5%;
     margin-right: 10%;
+}
+
+h3, span {
+    font-size: 24px;
+    font-weight: bold;
 }
 
 header{
@@ -43,6 +49,8 @@ header img{
 
 .career, .edu, .housing, .ess, .life, .save {
     color: white;
+    margin-left: 2em;
+    
 }
 
 #inputs > section > input{
@@ -69,7 +77,7 @@ section > img {
 }
 
 button{
-    background-color: transparent;
+    background-color: red;
 }
 
 
@@ -94,5 +102,14 @@ button:hover {
 
 #pie {
     width: 200px;
+}
+
+/* career select */
+.career #career {
+    margin-bottom: 0px;
+    margin-left: 1em;
+    height: 40px;
+    width: 250px;
+    border-radius: 100px;
 }
 
