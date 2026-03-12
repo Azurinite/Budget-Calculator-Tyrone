@@ -1,6 +1,5 @@
+
 // Using async/await to fetch data and parse JSON
-
-
 async function fetchData() {
     const response = await fetch("https://eecu-data-server.vercel.app/data");
     const data = await response.json();
@@ -15,15 +14,33 @@ async function fetchData() {
 
 fetchData();
 
+//Calculate the taxes
+function calculateFederalTax() {
+    let deduction = 16100;
+    if (selectValue == 0) {
+        return 0;
+    }
+    if ((selectValue - deduction) <= 12400) {
+        return (selectValue - deduction) * 0.1;
+    }
+    else if ((selectValue - deduction) <= 50400) {
+        return (selectValue - deduction) * 0.12;
+    }
+    else {
+        return (selectValue - deduction) * 0.22;
+    }
+}
+
+// Get the value of the select element and update it when the user changes the selection
+
 let selectValue = document.querySelector('select').value; // Get the value of the select element
+function updateValue() {
+    selectValue = document.querySelector('select').value; // Update the value of the select element
+    update(); // Call the update function to update the chart
+}
 
 
-
-
-// put the data into the page in a select element, only showing the occupation, but the value should be the salary
-
-
-
+// Get all the input elements and store them in an array
 const [...sections] = document.querySelectorAll("section");
 const all_inputs = sections.map((section) => section.querySelectorAll("input"));
 
@@ -34,6 +51,65 @@ function sum(inputs) {
   return selectValue - [...inputs].reduce((a, b) => a + b.valueAsNumber, 0);
 }
 
+
+// Get the sum of all the input values, treating NaN as 0
+function getSum() {
+    let sum = 0;
+    all_inputs.forEach(inputs => {
+        inputs.forEach(input => {
+            sum += input.valueAsNumber || 0; // Treat NaN as 0
+        });
+    });
+    return sum;
+}
+
+
+function goodorBad() {
+    const remaining = selectValue - (selectValue * 0.0145) - (selectValue * 0.062) - (selectValue * 0.05) - calculateFederalTax() - getSum();
+    if (remaining > 0) {
+        return '#00FF00';
+    } else if (remaining === 0) {
+        return '#FFF';
+    } else {
+        return '#FF0000';
+    }
+}
+function positiveOrNegative() {
+    const remaining = selectValue - (selectValue * 0.0145) - (selectValue * 0.062) - (selectValue * 0.05) - calculateFederalTax() - getSum();
+    if (remaining > 0) {
+        return `$${remaining.toFixed(2)}`;
+    } else if (remaining === 0) {
+        return `$${remaining.toFixed(2)}`;
+    } else {
+        return `-$${Math.abs(remaining).toFixed(2)}`;
+    }
+}
+
+
+
+// Register the plugin for Chart.JS
+const image = document.getElementById("coins");
+const centerTextPlugin = {
+    id: 'centerText',
+    afterDatasetsDraw(chart, args, options) {
+      const { ctx, chartArea: { left, right, top, bottom, width, height } } = chart;
+      ctx.save();
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+      const totalValue = options.totalValue || 'N/A';
+      const color = options.color || '#FFF'; 
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = "24px 'Open Sans'"; 
+      ctx.fillStyle = color; 
+      ctx.fillText(totalValue, centerX, centerY + 15);
+      ctx.fillText("Budget", centerX, centerY + 40);
+      ctx.drawImage(image, centerX - 20, centerY - 40, 40, 40);
+      ctx.restore();
+    }
+  };
+Chart.register(centerTextPlugin);  
+
 const canvas = document.querySelector("canvas");
 let current_chart = null;
 
@@ -42,34 +118,60 @@ function update() {
     current_chart = new Chart(canvas, {
         type: 'doughnut',
         data: {
-            labels: ['Education', 'Housing', `Essentials`, `Lifestyle`, `Savings`],
+            labels: ['Income', 'Medicare', 'Social Security', 'State Tax', 'Federal Tax', 'Education', 'Housing', `Essentials`, `Lifestyle`, `Savings`],
             datasets: [
                 {
                     label: 'Monthly (USD)',
                     data: [
-                        sum(all_inputs[0]),
-                        sum(all_inputs[1]),
-                        sum(all_inputs[2]),
-                        sum(all_inputs[3]),
-                        sum(all_inputs[4])
+                        selectValue,
+                        selectValue * 0.0145,
+                        selectValue * 0.062,
+                        selectValue * 0.05,
+                        calculateFederalTax(),
+                        selectValue - sum(all_inputs[0]),
+                        selectValue - sum(all_inputs[1]),
+                        selectValue - sum(all_inputs[2]), 
+                        selectValue - sum(all_inputs[3]),
+                        selectValue - sum(all_inputs[4])
+
                     ],
+                    backgroundColor: [
+                        'rgb(54, 54, 255)',
+                        'rgb(255, 205, 86)',
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)',
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)'
+
+
+                      ],
                 }
             ]
         },
         options: {
             responsive: false,
-            /*elements: {
+            elements: {
                 arc: {
                     borderWidth: 0
                 }
-            },*/
+            },
+            cutout: '60%',
             plugins: {
+                centerText: {
+                    totalValue: positiveOrNegative(),
+                    color: goodorBad() 
+                  },
                 legend: {
                     display: false
                 }
             }
         }
     });
+
 }
 
 document.body.addEventListener('input', () => {
@@ -77,3 +179,14 @@ document.body.addEventListener('input', () => {
 });
 
 update();
+
+
+function popUp() {
+    const incomePercent = selectValue - ((selectValue * 0.0145) - (selectValue * 0.062) - (selectValue * 0.05) - calculateFederalTax() - getSum());
+    const savings = document.getElementById("savings").valueAsNumber || 0;
+    if (savings < incomePercent * 0.1) {
+        alert("Your savings are less than 10% of your remaining income. Consider saving more for a secure financial future.");
+    } else {
+        alert("Great job! Your savings are healthy and contribute to a secure financial future.");
+    }
+}

@@ -1,7 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300 800;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/opensans/v44/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+
+
+
 
 :root{
-    --prim: black;
+    --prim: #1E1E1E;
     --sec: #0A5BA8;
     --font: 'League Spartan';
 } /*creating all the variables to use later in the css*/
@@ -17,10 +30,10 @@ body{
 main {
     display: flex;
     align-items: flex-start;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     margin-left: 5%;
-    margin-right: 10%;
+    margin-right: 15%;
 }
 
 h3, span {
@@ -76,10 +89,10 @@ section > img {
     margin: 1em;
 }
 
-button{
-    background-color: red;
+button {
+    border: none;
+    background: none;
 }
-
 
 #inputs > section > button {
     margin-left: 3em;
@@ -101,7 +114,7 @@ button:hover {
 }
 
 #pie {
-    width: 200px;
+    width: 300px;
 }
 
 /* career select */
@@ -113,3 +126,28 @@ button:hover {
     border-radius: 100px;
 }
 
+
+
+
+#coins{
+    display:none;
+}
+
+@media (width <= 768px) {
+    main {
+        flex-direction: column-reverse;
+    }
+    header {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+    #inputs > section {
+        margin: 1em 0;
+    }
+    button {
+        display:none;
+    }
+    .career {
+        margin-left: 0em
+    }
+}

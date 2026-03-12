@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href='https://fonts.googleapis.com' rel='stylesheet'>
     <link rel="stylesheet" href="styles.css">
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
     <script defer src="chart.js"></script>
@@ -23,7 +24,7 @@
             <div id="inputs">
                 <article class="career">
                     <h3>What is your career?</h3>
-                    <select id="career">
+                    <select id="career" onchange="updateValue()">
                         <option value="0">Select Career</option>
                     </select>
                     <!-- <img src="/imgs/search.png" alt="search" id="find"> --> <!-- commented out for now -->
@@ -66,7 +67,7 @@
                 <section class="save">
                     <h3 class="Savings">How much do you save a month?</h3>
                     <span>$</span>
-                    <input type="number" id="savings" placeholder="Enter the amount here...">
+                    <input type="number" id="savings" placeholder="Enter the amount here..." onchange="popUp()">
                     <img src="/imgs/search.png" alt="search" id="find">
                     <button><img src="/imgs/info.png" alt="info"></button>
                 </section>
@@ -76,6 +77,7 @@
         <canvas id="pie"></canvas>
     
     </main>
+    <img src="/imgs/Coins.png" alt="coins" id="coins">
     
 </body>
 
