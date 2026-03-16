@@ -16,26 +16,34 @@ fetchData();
 
 //Calculate the taxes
 function calculateFederalTax() {
-    let deduction = 16100;
-    if (selectValue == 0) {
+    const deduction = 16100;
+    let taxableIncome = selectValue - deduction;
+
+    if (taxableIncome <= 0) {
         return 0;
     }
-    if ((selectValue - deduction) <= 12400) {
-        return (selectValue - deduction) * 0.1;
+
+    let tax = 0;
+
+    if (taxableIncome <= 12400) {
+        // Entirely in the 10% bracket
+        tax = taxableIncome * 0.10;
+    } else if (taxableIncome <= 50400) {
+        // 10% on the first $12,400 + 12% on the amount ABOVE that
+        tax = (12400 * 0.10) + ((taxableIncome - 12400) * 0.12);
+    } else {
+        // 10% on the first $12,400 + 12% on the next $38,000 + 22% on the rest
+        tax = (12400 * 0.10) + (38000 * 0.12) + ((taxableIncome - 50400) * 0.22);
     }
-    else if ((selectValue - deduction) <= 50400) {
-        return (selectValue - deduction) * 0.12;
-    }
-    else {
-        return (selectValue - deduction) * 0.22;
-    }
+
+    return tax;
 }
 
 // Get the value of the select element and update it when the user changes the selection
 
-let selectValue = document.querySelector('select').value; // Get the value of the select element
+let selectValue = document.querySelector('select').value / 12; // Get the value of the select element
 function updateValue() {
-    selectValue = document.querySelector('select').value; // Update the value of the select element
+    selectValue = document.querySelector('select').value / 12; // Update the value of the select element
     update(); // Call the update function to update the chart
 }
 
@@ -184,9 +192,24 @@ update();
 function popUp() {
     const incomePercent = selectValue - ((selectValue * 0.0145) - (selectValue * 0.062) - (selectValue * 0.05) - calculateFederalTax() - getSum());
     const savings = document.getElementById("savings").valueAsNumber || 0;
+    const results = document.getElementById("results");
     if (savings < incomePercent * 0.1) {
-        alert("Your savings are less than 10% of your remaining income. Consider saving more for a secure financial future.");
+        const popup = document.createElement("div");
+        popup.classList.add("popup");
+        popup.innerHTML = `
+            <h2>Wise-up!</h2>
+            <p>"Savings" is an expense you pay to your future self.</p>
+            <p>Consider saving at least 10% of your monthly earnings!</p>
+            <button id="close-btn">OK</button>
+        `;
+        popup.style.fontFamily = "'Open Sans', sans-serif";
+        results.appendChild(popup);
+        document.getElementById("close-btn").addEventListener("click", () => {
+            results.removeChild(popup);
+        });
+
     } else {
-        alert("Great job! Your savings are healthy and contribute to a secure financial future.");
+        return;
     }
 }
+

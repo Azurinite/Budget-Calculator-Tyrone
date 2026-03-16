@@ -126,11 +126,40 @@ button:hover {
     border-radius: 100px;
 }
 
+#results {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2em;
+}
 
+.popup {
+    background-color: white;
+    border-radius: 18px;
+    padding: 0 0 2em 2em; 
+    width: 166px;
+    height: fit-content;
+}
+
+br {
+    display: none;
+}
 
 
 #coins{
     display:none;
+}
+
+#close-btn {
+    background-color: var(--prim);
+    color: white;
+    border-radius: 8px;
+    padding: 0.5em 1.5em;
+}
+
+#career {
+    margin-right: 53.5px;
 }
 
 @media (width <= 768px) {
@@ -140,6 +169,7 @@ button:hover {
     header {
         flex-direction: column-reverse;
         align-items: center;
+        text-align: center;
     }
     #inputs > section {
         margin: 1em 0;
@@ -150,4 +180,19 @@ button:hover {
     .career {
         margin-left: 0em
     }
+    .popup {
+        width: 100%;
+        padding: 1em;
+    }
+    #results {
+        flex-direction: column;
+        gap: 1em;
+        align-items: center;
+        justify-content: center;  
+        padding-left: 20px; 
+    } 
+    #career {
+        margin-right: 0px;
+    }
 }
+
