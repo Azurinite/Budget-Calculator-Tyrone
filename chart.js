@@ -100,22 +100,26 @@ const image = document.getElementById("coins");
 const centerTextPlugin = {
     id: 'centerText',
     afterDatasetsDraw(chart, args, options) {
-      const { ctx, chartArea: { left, right, top, bottom, width, height } } = chart;
+      const { ctx, chartArea: { left, right, top, bottom } } = chart;
       ctx.save();
+      
       const centerX = (left + right) / 2;
       const centerY = (top + bottom) / 2;
       const totalValue = options.totalValue || 'N/A';
-      const color = options.color || '#FFF'; 
+      const valueColor = options.color || '#FFF'; 
+      const labelColor = '#FFF'; 
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.font = "24px 'Open Sans'"; 
-      ctx.fillStyle = color; 
-      ctx.fillText(totalValue, centerX, centerY + 15);
-      ctx.fillText("Budget", centerX, centerY + 40);
-      ctx.drawImage(image, centerX - 20, centerY - 40, 40, 40);
+      ctx.fillStyle = valueColor; 
+      ctx.fillText(totalValue, centerX, centerY);
+      ctx.font = "16px 'Open Sans'"; 
+      ctx.fillStyle = labelColor; 
+      ctx.fillText("Avaliable Budget", centerX, centerY + 25);
+      ctx.drawImage(image, centerX - 20, centerY - 55, 40, 40);
       ctx.restore();
     }
-  };
+};
 Chart.register(centerTextPlugin);  
 
 const canvas = document.querySelector("canvas");
